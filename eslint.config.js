@@ -33,7 +33,7 @@ export default [
     },
   },
   {
-    files: ['tests/**/*.js'],
+    files: ['test/**/*.js', 'tests/**/*.js'],
     languageOptions: {
       globals: {
         describe: 'readonly',
@@ -48,6 +48,6 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/**', 'coverage/**', 'logs/**', 'drizzle/**'],
+    ignores: ['node_modules/**', 'coverage/**', 'logs/**', 'drizzle/**', '.claude/**'],
   },
 ];

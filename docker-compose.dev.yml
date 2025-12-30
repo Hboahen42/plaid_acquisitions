@@ -31,7 +31,7 @@ services:
     ports:
       - '3000:3000'
     env_file:
-      -  .env.development
+      - .env.development
     volumes:
       # Mount source code for hot reload
       - ./src:/app/src:cached

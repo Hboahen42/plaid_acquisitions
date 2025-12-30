@@ -1,5 +1,5 @@
 import logger from '#config/logger.js';
-import {jwttoken} from '#utils/jwt.js';
+import { jwttoken } from '#utils/jwt.js';
 
 export const authenticateToken = async (req, res, next) => {
   try {
@@ -16,31 +16,32 @@ export const authenticateToken = async (req, res, next) => {
 
     logger.info(`User authenticated: ${req.user.email} (${req.user.role})`);
     next();
-
   } catch (error) {
     logger.error('Authentication error:', error);
     return res.status(401).json({
       error: 'Unauthorized',
-      message: 'Invalid or expired token'
+      message: 'Invalid or expired token',
     });
   }
 };
 
-export const requireRole = (allowedRoles) => {
+export const requireRole = allowedRoles => {
   return (req, res, next) => {
     try {
       if (!req.user) {
         return res.status(401).json({
           error: 'User not authenticated',
-          message: 'Authentication required'
+          message: 'Authentication required',
         });
       }
 
       if (!allowedRoles.includes(req.user.role)) {
-        logger.error(`Access denied for user ${req.user.email} with role ${req.user.role}. Required: ${allowedRoles.join(', ')}`);
+        logger.error(
+          `Access denied for user ${req.user.email} with role ${req.user.role}. Required: ${allowedRoles.join(', ')}`
+        );
         return res.status(403).json({
           error: 'Access denied',
-          message: 'Admin access required'
+          message: 'Admin access required',
         });
       }
 
@@ -50,7 +51,7 @@ export const requireRole = (allowedRoles) => {
       return res.status(500).json({
         error: 'Internal Server Error',
         message: 'Error during role verification',
-      })
+      });
     }
-  }
+  };
 };
