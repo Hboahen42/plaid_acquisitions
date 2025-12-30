@@ -68,7 +68,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Published Images" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Image Name:** \`${{ secrets.DOCKER_USERNAME }}/acquistions\`" >> $GITHUB_STEP_SUMMARY
+            echo "**Image Name:** \`${{ secrets.DOCKER_USERNAME }}/k8s-demo-api\`" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
@@ -79,7 +79,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Pull Command" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-            echo "docker pull ${{ secrets.DOCKER_USERNAME }}/acquistions:latest" >> $GITHUB_STEP_SUMMARY
+            echo "docker pull ${{ secrets.DOCKER_USERNAME }}/k8s-demo-api:latest" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Docker build failed!" >> $GITHUB_STEP_SUMMARY
