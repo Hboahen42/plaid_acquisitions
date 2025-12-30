@@ -48,6 +48,12 @@ export default [
     },
   },
   {
-    ignores: ['node_modules/**', 'coverage/**', 'logs/**', 'drizzle/**', '.claude/**'],
+    ignores: [
+      'node_modules/**',
+      'coverage/**',
+      'logs/**',
+      'drizzle/**',
+      '.claude/**',
+    ],
   },
 ];
