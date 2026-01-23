@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.48% </span>
+                <span class="strong">12.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/89</span>
+                <span class='fraction'>12/94</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.48% </span>
+                <span class="strong">12.76% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/89</span>
+                <span class='fraction'>12/94</span>
             </div>
         
             
@@ -152,33 +152,17 @@
 <a name='L87'></a><a href='#L87'>87</a>
 <a name='L88'></a><a href='#L88'>88</a>
 <a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -221,6 +205,32 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -241,95 +251,100 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import logger from "#config/logger.js";
-import {users} from "#models/user.model.js";
-import {db} from "#config/database.js";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import logger from '#config/logger.js';
+import { users } from '#models/user.model.js';
+import { db } from '#config/database.js';
 import { eq } from 'drizzle-orm';
 &nbsp;
 export const getAllUsers = <span class="fstat-no" title="function not covered" >async () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >        return await db.select({</span>
-<span class="cstat-no" title="statement not covered" >            id: users.id,</span>
-<span class="cstat-no" title="statement not covered" >            email: users.email,</span>
-<span class="cstat-no" title="statement not covered" >            name: users.name,</span>
-<span class="cstat-no" title="statement not covered" >            role: users.role,</span>
-<span class="cstat-no" title="statement not covered" >            created_at: users.created_at,</span>
-<span class="cstat-no" title="statement not covered" >            updated_at: users.updated_at,</span>
-<span class="cstat-no" title="statement not covered" >        }).from(users);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    } catch (e) {</span>
-<span class="cstat-no" title="statement not covered" >        logger.error('Error getting users', e);</span>
-<span class="cstat-no" title="statement not covered" >        throw e;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+<span class="cstat-no" title="statement not covered" >    return await db</span>
+<span class="cstat-no" title="statement not covered" >      .select({</span>
+<span class="cstat-no" title="statement not covered" >        id: users.id,</span>
+<span class="cstat-no" title="statement not covered" >        email: users.email,</span>
+<span class="cstat-no" title="statement not covered" >        name: users.name,</span>
+<span class="cstat-no" title="statement not covered" >        role: users.role,</span>
+<span class="cstat-no" title="statement not covered" >        created_at: users.created_at,</span>
+<span class="cstat-no" title="statement not covered" >        updated_at: users.updated_at,</span>
+<span class="cstat-no" title="statement not covered" >      })</span>
+<span class="cstat-no" title="statement not covered" >      .from(users);</span>
+<span class="cstat-no" title="statement not covered" >  } catch (e) {</span>
+<span class="cstat-no" title="statement not covered" >    logger.error('Error getting users', e);</span>
+<span class="cstat-no" title="statement not covered" >    throw e;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
 &nbsp;
-export const getUserById = <span class="fstat-no" title="function not covered" >async (id) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >        const [user] = await db.select({</span>
-<span class="cstat-no" title="statement not covered" >            id: users.id,</span>
-<span class="cstat-no" title="statement not covered" >            email: users.email,</span>
-<span class="cstat-no" title="statement not covered" >            name: users.name,</span>
-<span class="cstat-no" title="statement not covered" >            role: users.role,</span>
-<span class="cstat-no" title="statement not covered" >            created_at: users.created_at,</span>
-<span class="cstat-no" title="statement not covered" >            updated_at: users.updated_at,</span>
-<span class="cstat-no" title="statement not covered" >        }).from(users).where(eq(users.id, id)).limit(1);</span>
+export const getUserById = <span class="fstat-no" title="function not covered" >async id =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+<span class="cstat-no" title="statement not covered" >    const [user] = await db</span>
+<span class="cstat-no" title="statement not covered" >      .select({</span>
+<span class="cstat-no" title="statement not covered" >        id: users.id,</span>
+<span class="cstat-no" title="statement not covered" >        email: users.email,</span>
+<span class="cstat-no" title="statement not covered" >        name: users.name,</span>
+<span class="cstat-no" title="statement not covered" >        role: users.role,</span>
+<span class="cstat-no" title="statement not covered" >        created_at: users.created_at,</span>
+<span class="cstat-no" title="statement not covered" >        updated_at: users.updated_at,</span>
+<span class="cstat-no" title="statement not covered" >      })</span>
+<span class="cstat-no" title="statement not covered" >      .from(users)</span>
+<span class="cstat-no" title="statement not covered" >      .where(eq(users.id, id))</span>
+<span class="cstat-no" title="statement not covered" >      .limit(1);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >            throw new Error('User not found');</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        return user;</span>
-<span class="cstat-no" title="statement not covered" >    } catch (e) {</span>
-<span class="cstat-no" title="statement not covered" >        logger.error('Error getting user by ID', e);</span>
-<span class="cstat-no" title="statement not covered" >        throw e;</span>
+<span class="cstat-no" title="statement not covered" >    if (!user) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error('User not found');</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return user;</span>
+<span class="cstat-no" title="statement not covered" >  } catch (e) {</span>
+<span class="cstat-no" title="statement not covered" >    logger.error('Error getting user by ID', e);</span>
+<span class="cstat-no" title="statement not covered" >    throw e;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
 &nbsp;
 export const updateUser = <span class="fstat-no" title="function not covered" >async (id, updates) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >        // Check if user exists</span>
-<span class="cstat-no" title="statement not covered" >        const existingUser = await getUserById(id);</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+<span class="cstat-no" title="statement not covered" >    // Check if user exists</span>
+<span class="cstat-no" title="statement not covered" >    await getUserById(id);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        // Update the user</span>
-<span class="cstat-no" title="statement not covered" >        const [updatedUser] = await db</span>
-<span class="cstat-no" title="statement not covered" >            .update(users)</span>
-<span class="cstat-no" title="statement not covered" >            .set({</span>
-<span class="cstat-no" title="statement not covered" >                ...updates,</span>
-<span class="cstat-no" title="statement not covered" >                updated_at: new Date()</span>
-<span class="cstat-no" title="statement not covered" >            })</span>
-<span class="cstat-no" title="statement not covered" >            .where(eq(users.id, id))</span>
-<span class="cstat-no" title="statement not covered" >            .returning({</span>
-<span class="cstat-no" title="statement not covered" >                id: users.id,</span>
-<span class="cstat-no" title="statement not covered" >                email: users.email,</span>
-<span class="cstat-no" title="statement not covered" >                name: users.name,</span>
-<span class="cstat-no" title="statement not covered" >                role: users.role,</span>
-<span class="cstat-no" title="statement not covered" >                created_at: users.created_at,</span>
-<span class="cstat-no" title="statement not covered" >                updated_at: users.updated_at,</span>
-<span class="cstat-no" title="statement not covered" >            });</span>
+<span class="cstat-no" title="statement not covered" >    // Update the user</span>
+<span class="cstat-no" title="statement not covered" >    const [updatedUser] = await db</span>
+<span class="cstat-no" title="statement not covered" >      .update(users)</span>
+<span class="cstat-no" title="statement not covered" >      .set({</span>
+<span class="cstat-no" title="statement not covered" >        ...updates,</span>
+<span class="cstat-no" title="statement not covered" >        updated_at: new Date(),</span>
+<span class="cstat-no" title="statement not covered" >      })</span>
+<span class="cstat-no" title="statement not covered" >      .where(eq(users.id, id))</span>
+<span class="cstat-no" title="statement not covered" >      .returning({</span>
+<span class="cstat-no" title="statement not covered" >        id: users.id,</span>
+<span class="cstat-no" title="statement not covered" >        email: users.email,</span>
+<span class="cstat-no" title="statement not covered" >        name: users.name,</span>
+<span class="cstat-no" title="statement not covered" >        role: users.role,</span>
+<span class="cstat-no" title="statement not covered" >        created_at: users.created_at,</span>
+<span class="cstat-no" title="statement not covered" >        updated_at: users.updated_at,</span>
+<span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        logger.info(`User ${id} updated successfully`);</span>
-<span class="cstat-no" title="statement not covered" >        return updatedUser;</span>
-<span class="cstat-no" title="statement not covered" >    } catch (e) {</span>
-<span class="cstat-no" title="statement not covered" >        logger.error('Error updating user', e);</span>
-<span class="cstat-no" title="statement not covered" >        throw e;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >    logger.info(`User ${id} updated successfully`);</span>
+<span class="cstat-no" title="statement not covered" >    return updatedUser;</span>
+<span class="cstat-no" title="statement not covered" >  } catch (e) {</span>
+<span class="cstat-no" title="statement not covered" >    logger.error('Error updating user', e);</span>
+<span class="cstat-no" title="statement not covered" >    throw e;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
 &nbsp;
-export const deleteUser = <span class="fstat-no" title="function not covered" >async (id) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >        // Check if user exists</span>
-<span class="cstat-no" title="statement not covered" >        const existingUser = await getUserById(id);</span>
+export const deleteUser = <span class="fstat-no" title="function not covered" >async id =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+<span class="cstat-no" title="statement not covered" >    // Check if user exists</span>
+<span class="cstat-no" title="statement not covered" >    const existingUser = await getUserById(id);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        // Delete the user</span>
-<span class="cstat-no" title="statement not covered" >        await db.delete(users).where(eq(users.id, id));</span>
+<span class="cstat-no" title="statement not covered" >    // Delete the user</span>
+<span class="cstat-no" title="statement not covered" >    await db.delete(users).where(eq(users.id, id));</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        logger.info(`User ${id} deleted successfully`);</span>
-<span class="cstat-no" title="statement not covered" >        return { message: 'User deleted successfully', user: existingUser };</span>
-<span class="cstat-no" title="statement not covered" >    } catch (e) {</span>
-<span class="cstat-no" title="statement not covered" >        logger.error('Error deleting user', e);</span>
-<span class="cstat-no" title="statement not covered" >        throw e;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >    logger.info(`User ${id} deleted successfully`);</span>
+<span class="cstat-no" title="statement not covered" >    return { message: 'User deleted successfully', user: existingUser };</span>
+<span class="cstat-no" title="statement not covered" >  } catch (e) {</span>
+<span class="cstat-no" title="statement not covered" >    logger.error('Error deleting user', e);</span>
+<span class="cstat-no" title="statement not covered" >    throw e;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -337,7 +352,7 @@ export const deleteUser = <span class="fstat-no" title="function not covered" >a
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-30T06:17:38.616Z
+                at 2026-01-23T06:09:51.196Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

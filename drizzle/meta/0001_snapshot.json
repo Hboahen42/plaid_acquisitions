@@ -1,6 +1,6 @@
 {
-  "id": "74ec83ce-dba5-430f-970e-72a956daa7df",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "0b0211e1-9e10-4c08-b08d-b2b79282029a",
+  "prevId": "74ec83ce-dba5-430f-970e-72a956daa7df",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -207,6 +207,12 @@
         "consent_expiration_time": {
           "name": "consent_expiration_time",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "transactions_cursor": {
+          "name": "transactions_cursor",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
