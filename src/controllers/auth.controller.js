@@ -29,7 +29,7 @@ export const signup = async (req, res, next) => {
 
     cookies.set(res, 'token', token);
 
-    logger.info(`User registered successully: ${email}`);
+    logger.info(`User registered successfully: ${email}`);
     res.status(201).json({
       message: 'User registered',
       user: {

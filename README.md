@@ -1,4 +1,4 @@
-# Acquisitions API
+# Plaid Acquisitions API
 
 A secure and scalable RESTful API built with Node.js and Express for managing user acquisitions with authentication, role-based access control, and advanced security features.
 

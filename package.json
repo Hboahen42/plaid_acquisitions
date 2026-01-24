@@ -1,7 +1,7 @@
 {
-  "name": "acquistions",
+  "name": "plaid_acquisitions",
   "version": "1.0.0",
-  "description": "",
+  "description": "A secure and scalable RESTful API built with Node.js and Express for managing user acquisitions with authentication, role-based access control, and advanced security features.",
   "main": "index.js",
   "imports": {
     "#src/*": "./src/*",
@@ -52,7 +52,10 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.563.0",
     "morgan": "^1.10.1",
+    "plaid": "^41.0.0",
+    "react-plaid-link": "^4.1.1",
     "winston": "^3.19.0",
     "zod": "^4.2.1"
   },
@@ -66,5 +69,8 @@
     "jest": "^30.2.0",
     "prettier": "^3.7.4",
     "supertest": "^7.1.4"
+  },
+  "directories": {
+    "test": "test"
   }
 }
