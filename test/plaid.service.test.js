@@ -1,15 +1,16 @@
-import plaidService from '#src/services/plaid.service.js';
-import { plaidClient } from '#src/config/plaid.js';
-import { db } from '#config/database.js';
+import { jest } from '@jest/globals';
 
-jest.mock('#src/config/plaid.js', () => ({
+jest.unstable_mockModule('#src/config/plaid.js', () => ({
   plaidClient: {
-    linkTokenCreate: jest.fn(),
+    sandboxPublicTokenCreate: jest.fn(),
     itemPublicTokenExchange: jest.fn(),
+    itemGet: jest.fn(),
+    institutionsGetById: jest.fn(),
+    accountsGet: jest.fn(),
   },
 }));
 
-jest.mock('#config/database.js', () => ({
+jest.unstable_mockModule('#config/database.js', () => ({
   db: {
     select: jest.fn().mockReturnThis(),
     from: jest.fn().mockReturnThis(),
@@ -17,9 +18,21 @@ jest.mock('#config/database.js', () => ({
     limit: jest.fn().mockReturnThis(),
     insert: jest.fn().mockReturnThis(),
     values: jest.fn().mockReturnThis(),
-    returning: jest.fn(),
+    returning: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    set: jest.fn().mockReturnThis(),
   },
 }));
+
+jest.unstable_mockModule('#src/utils/crypto.js', () => ({
+  encrypt: jest.fn(val => `encrypted:${val}`),
+  decrypt: jest.fn(val => val.replace('encrypted:', '')),
+}));
+
+const { plaidClient } = await import('#src/config/plaid.js');
+const { db } = await import('#config/database.js');
+const { encrypt, decrypt } = await import('#src/utils/crypto.js');
+const plaidService = await import('#src/services/plaid.service.js');
 
 describe('Plaid Service', () => {
   beforeEach(() => {
@@ -29,36 +42,37 @@ describe('Plaid Service', () => {
   describe('createLinkToken', () => {
     it('should create a link token for a new item', async () => {
       const userId = 1;
-      const mockResponse = { data: { link_token: 'test-token' } };
-      plaidClient.linkTokenCreate.mockResolvedValue(mockResponse);
+      const mockResponse = { data: { linkToken: 'test-token' } };
+      plaidClient.sandboxPublicTokenCreate.mockResolvedValue(mockResponse);
 
       const result = await plaidService.createLinkToken(userId);
 
-      expect(plaidClient.linkTokenCreate).toHaveBeenCalledWith({
+      expect(plaidClient.sandboxPublicTokenCreate).toHaveBeenCalledWith({
         user: { client_user_id: '1' },
         client_name: 'Plaid Acquisition API',
         products: expect.any(Array),
         country_codes: expect.any(Array),
         language: 'en',
       });
-      expect(result).toEqual(mockResponse.data);
+      expect(result).toEqual({
+        linkToken: 'test-token',
+        expiration: undefined,
+      });
     });
 
     it('should include access_token when itemId is provided', async () => {
       const userId = 1;
       const itemId = 123;
-      const mockItem = { plaidAccessToken: 'access-123' };
+      const mockItem = { plaidAccessToken: 'encrypted:access-123' };
 
-      db.returning.mockResolvedValue([mockItem]); // Not really returning for select but we need a mock
-      // Actually select mock:
       db.limit.mockResolvedValue([mockItem]);
 
-      const mockResponse = { data: { link_token: 'update-token' } };
-      plaidClient.linkTokenCreate.mockResolvedValue(mockResponse);
+      const mockResponse = { data: { linkToken: 'update-token' } };
+      plaidClient.sandboxPublicTokenCreate.mockResolvedValue(mockResponse);
 
       await plaidService.createLinkToken(userId, itemId);
 
-      expect(plaidClient.linkTokenCreate).toHaveBeenCalledWith(
+      expect(plaidClient.sandboxPublicTokenCreate).toHaveBeenCalledWith(
         expect.objectContaining({
           access_token: 'access-123',
         })
@@ -70,12 +84,10 @@ describe('Plaid Service', () => {
     it('should exchange public token and save item', async () => {
       const userId = 1;
       const publicToken = 'public-123';
-      const institutionId = 'ins_1';
-      const institutionName = 'Chase';
 
       const mockExchangeResponse = {
         data: {
-          access_token: 'access-123',
+          accessToken: 'access-123',
           item_id: 'plaid-item-123',
         },
       };
@@ -83,21 +95,50 @@ describe('Plaid Service', () => {
         mockExchangeResponse
       );
 
+      const mockItemResponse = {
+        data: {
+          item: {
+            institution_id: 'ins_1',
+          },
+        },
+      };
+      plaidClient.itemGet.mockResolvedValue(mockItemResponse);
+
+      const mockInstitutionResponse = {
+        data: {
+          institution: {
+            name: 'Chase',
+          },
+        },
+      };
+      plaidClient.institutionsGetById.mockResolvedValue(mockInstitutionResponse);
+
+      const mockAccountsResponse = {
+        data: {
+          accounts: [],
+        },
+      };
+      plaidClient.accountsGet.mockResolvedValue(mockAccountsResponse);
+
       const mockSavedItem = { id: 1, userId, plaidItemId: 'plaid-item-123' };
       db.returning.mockResolvedValue([mockSavedItem]);
 
       const result = await plaidService.exchangePublicToken(
         userId,
-        publicToken,
-        institutionId,
-        institutionName
+        publicToken
       );
 
       expect(plaidClient.itemPublicTokenExchange).toHaveBeenCalledWith({
         public_token: publicToken,
       });
       expect(db.insert).toHaveBeenCalled();
-      expect(result).toEqual(mockSavedItem);
+      expect(db.values).toHaveBeenCalledWith(expect.objectContaining({
+        plaidAccessToken: 'encrypted:access-123'
+      }));
+      expect(result).toEqual({
+        itemId: 1,
+        institutionName: 'Chase',
+      });
     });
   });
 });

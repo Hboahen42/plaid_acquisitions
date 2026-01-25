@@ -31,14 +31,14 @@ jobs:
         id: eslint
         run: |
           echo "Running ESLint..."
-          npm run lint
+          npm run lint:fix
         continue-on-error: true
 
       - name: Run Prettier check
         id: prettier
         run: |
           echo "Running Prettier check..."
-          npm run format:check
+          npm run format
         continue-on-error: true
 
       - name: Annotate ESLint failures

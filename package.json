@@ -52,10 +52,8 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
-    "lucide-react": "^0.563.0",
     "morgan": "^1.10.1",
     "plaid": "^41.0.0",
-    "react-plaid-link": "^4.1.1",
     "winston": "^3.19.0",
     "zod": "^4.2.1"
   },
