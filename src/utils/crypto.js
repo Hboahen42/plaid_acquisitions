@@ -11,7 +11,7 @@ const KEY_LENGTH = 32;
  * @param {string} text - The text to encrypt
  * @returns {string} - Encrypted text in format: salt:iv:authTag:encryptedText
  */
-export const encrypt = (text) => {
+export const encrypt = text => {
   const secret = process.env.ENCRYPTION_KEY;
   if (!secret) {
     throw new Error('ENCRYPTION_KEY environment variable is not set');
@@ -36,7 +36,7 @@ export const encrypt = (text) => {
  * @param {string} encryptedData - The encrypted data in format: salt:iv:authTag:encryptedText
  * @returns {string} - Decrypted text
  */
-export const decrypt = (encryptedData) => {
+export const decrypt = encryptedData => {
   const secret = process.env.ENCRYPTION_KEY;
   if (!secret) {
     throw new Error('ENCRYPTION_KEY environment variable is not set');

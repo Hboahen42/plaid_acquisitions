@@ -12,7 +12,6 @@ import {
   callCreateSandboxToken,
 } from '#controllers/plaid.controller.js';
 
-
 const router = express.Router();
 
 // All routes require authentication
@@ -29,7 +28,6 @@ router.get('/balances', fetchBalanceById);
 // Get transaction
 router.get('/transactions', fetchTransactionById);
 
-
 // Post Routes
 // Sandbox token creation
 router.post('/create-sandbox-token', callCreateSandboxToken);
@@ -45,7 +43,6 @@ router.post('/accounts/sync/:itemId', callSyncAccounts);
 
 // Sync transactions
 router.post('/transactions/sync', callSyncTransactions);
-
 
 // Delete Routes
 

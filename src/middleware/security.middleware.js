@@ -3,10 +3,6 @@ import { slidingWindow } from '@arcjet/node';
 import logger from '#config/logger.js';
 
 const securityMiddleware = async (req, res, next) => {
-  if (process.env.NODE_ENV === 'development' && req.path === '/health') {
-    return next();
-  }
-
   try {
     const role = req.user?.role || 'guest';
 
