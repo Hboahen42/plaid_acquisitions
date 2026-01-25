@@ -1,11 +1,11 @@
 services:
-  # Acquisitions API application (Production)
+  # Plaid Acquisitions API application (Production)
   app:
     build:
       context: .
       dockerfile: Dockerfile
       target: production
-    container_name: acquisitions-app-prod
+    container_name: plaid-acquisitions-app-prod
     ports:
       - '3000:3000'
     env_file:
@@ -19,7 +19,7 @@ services:
       # Optional: Mount additional config files
       - ./drizzle.config.js:/app/drizzle.config.js:ro
     networks:
-      - acquisitions-network
+      - plaid-acquisitions-network
     healthcheck:
       test:
         [
@@ -50,7 +50,7 @@ services:
   # Optional: Nginx reverse proxy for production
   nginx:
     image: nginx:alpine
-    container_name: acquisitions-nginx
+    container_name: plaid-acquisitions-nginx
     ports:
       - '80:80'
       - '443:443'
@@ -60,7 +60,7 @@ services:
     depends_on:
       - app
     networks:
-      - acquisitions-network
+      - plaid-acquisitions-network
     restart: unless-stopped
     profiles:
       - nginx
@@ -71,18 +71,18 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
-    container_name: acquisitions-migrator
+    container_name: plaid-acquisitions-migrator
     env_file:
       - .env.production
     command: ['npm', 'run', 'db:migrate']
     networks:
-      - acquisitions-network
+      - plaid-acquisitions-network
     profiles:
       - migration
     restart: 'no'
 
 networks:
-  acquisitions-network:
+  plaid-acquisitions-network:
     driver: bridge
 
 # Optional: For production monitoring
