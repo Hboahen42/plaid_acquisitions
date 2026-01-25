@@ -2,7 +2,7 @@ services:
   # Neon Local proxy for development
   neon-local:
     image: neondatabase/neon_local:latest
-    container_name: acquisitions-neon-local
+    container_name: plaid-acquisitions-neon-local
     ports:
       - '5432:5432'
     env_file:
@@ -13,7 +13,7 @@ services:
       # Git branch detection for branch-per-feature development
       - ./.git/HEAD:/tmp/.git/HEAD:ro
     networks:
-      - acquisitions-network
+      - plaid-acquisitions-network
     healthcheck:
       test: ['CMD', 'pg_isready', '-h', 'localhost', '-p', '5432', '-U', 'neon']
       interval: 10s
@@ -21,13 +21,13 @@ services:
       retries: 5
       start_period: 30s
 
-  # Acquisitions API application
+  # Plaid Acquisitions API application
   app:
     build:
       context: .
       dockerfile: Dockerfile
       target: dev
-    container_name: acquisitions-app-dev
+    container_name: plaid-acquisitions-app-dev
     ports:
       - '3000:3000'
     env_file:
@@ -43,7 +43,7 @@ services:
       neon-local:
         condition: service_healthy
     networks:
-      - acquisitions-network
+      - plaid-acquisitions-network
     healthcheck:
       test:
         [
@@ -64,7 +64,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: dev
-    container_name: acquisitions-drizzle-studio
+    container_name: plaid-acquisitions-drizzle-studio
     ports:
       - '4983:4983'
     env_file:
@@ -74,12 +74,12 @@ services:
       neon-local:
         condition: service_healthy
     networks:
-      - acquisitions-network
+      - plaid-acquisitions-network
     profiles:
       - studio
 
 networks:
-  acquisitions-network:
+  plaid-acquisitions-network:
     driver: bridge
 
 volumes:

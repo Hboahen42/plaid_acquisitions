@@ -32,16 +32,16 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/k8s-demo-api
+          images: ${{ secrets.DOCKER_USERNAME }}/plaid-acquisitions
           tags: |
             type=ref,event=branch
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=prod-{{date 'YYYYMMDD-HHmmss' tz='UTC'}}
           labels: |
-            org.opencontainers.image.title=Acquistions API
-            org.opencontainers.image.description=Acquistions API Docker Image
-            org.opencontainers.image.vendor=Acquistions
+            org.opencontainers.image.title=Plaid Acquisitions API
+            org.opencontainers.image.description=Plaid Acquisitions API Docker Image
+            org.opencontainers.image.vendor=Plaid Acquisitions
 
       - name: Build and push Docker image
         id: build-push
@@ -54,8 +54,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           target: production
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/k8s-demo-api:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/k8s-demo-api:buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/plaid-acquisitions:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/plaid-acquisitions:buildcache,mode=max
 
       - name: Generate Docker summary
         if: always()
@@ -68,7 +68,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Published Images" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Image Name:** \`${{ secrets.DOCKER_USERNAME }}/k8s-demo-api\`" >> $GITHUB_STEP_SUMMARY
+            echo "**Image Name:** \`${{ secrets.DOCKER_USERNAME }}/plaid-acquisitions\`" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
@@ -79,7 +79,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Pull Command" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-            echo "docker pull ${{ secrets.DOCKER_USERNAME }}/k8s-demo-api:latest" >> $GITHUB_STEP_SUMMARY
+            echo "docker pull ${{ secrets.DOCKER_USERNAME }}/plaid-acquisitions:latest" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Docker build failed!" >> $GITHUB_STEP_SUMMARY
