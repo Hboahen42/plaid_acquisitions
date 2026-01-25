@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+await import('#src/utils/crypto.js');
 
 jest.unstable_mockModule('#src/config/plaid.js', () => ({
   plaidClient: {
@@ -7,6 +8,7 @@ jest.unstable_mockModule('#src/config/plaid.js', () => ({
     itemGet: jest.fn(),
     institutionsGetById: jest.fn(),
     accountsGet: jest.fn(),
+    linkTokenCreate: jest.fn(),
   },
 }));
 
@@ -31,7 +33,6 @@ jest.unstable_mockModule('#src/utils/crypto.js', () => ({
 
 const { plaidClient } = await import('#src/config/plaid.js');
 const { db } = await import('#config/database.js');
-const { encrypt, decrypt } = await import('#src/utils/crypto.js');
 const plaidService = await import('#src/services/plaid.service.js');
 
 describe('Plaid Service', () => {
@@ -42,12 +43,12 @@ describe('Plaid Service', () => {
   describe('createLinkToken', () => {
     it('should create a link token for a new item', async () => {
       const userId = 1;
-      const mockResponse = { data: { linkToken: 'test-token' } };
-      plaidClient.sandboxPublicTokenCreate.mockResolvedValue(mockResponse);
+      const mockResponse = { data: { link_token: 'test-token' } };
+      plaidClient.linkTokenCreate.mockResolvedValue(mockResponse);
 
       const result = await plaidService.createLinkToken(userId);
 
-      expect(plaidClient.sandboxPublicTokenCreate).toHaveBeenCalledWith({
+      expect(plaidClient.linkTokenCreate).toHaveBeenCalledWith({
         user: { client_user_id: '1' },
         client_name: 'Plaid Acquisition API',
         products: expect.any(Array),
@@ -67,12 +68,12 @@ describe('Plaid Service', () => {
 
       db.limit.mockResolvedValue([mockItem]);
 
-      const mockResponse = { data: { linkToken: 'update-token' } };
-      plaidClient.sandboxPublicTokenCreate.mockResolvedValue(mockResponse);
+      const mockResponse = { data: { link_token: 'update-token' } };
+      plaidClient.linkTokenCreate.mockResolvedValue(mockResponse);
 
       await plaidService.createLinkToken(userId, itemId);
 
-      expect(plaidClient.sandboxPublicTokenCreate).toHaveBeenCalledWith(
+      expect(plaidClient.linkTokenCreate).toHaveBeenCalledWith(
         expect.objectContaining({
           access_token: 'access-123',
         })
@@ -87,7 +88,7 @@ describe('Plaid Service', () => {
 
       const mockExchangeResponse = {
         data: {
-          accessToken: 'access-123',
+          access_token: 'access-123',
           item_id: 'plaid-item-123',
         },
       };
@@ -111,7 +112,9 @@ describe('Plaid Service', () => {
           },
         },
       };
-      plaidClient.institutionsGetById.mockResolvedValue(mockInstitutionResponse);
+      plaidClient.institutionsGetById.mockResolvedValue(
+        mockInstitutionResponse
+      );
 
       const mockAccountsResponse = {
         data: {
@@ -120,6 +123,7 @@ describe('Plaid Service', () => {
       };
       plaidClient.accountsGet.mockResolvedValue(mockAccountsResponse);
 
+      db.limit.mockResolvedValue([]);
       const mockSavedItem = { id: 1, userId, plaidItemId: 'plaid-item-123' };
       db.returning.mockResolvedValue([mockSavedItem]);
 
@@ -132,9 +136,11 @@ describe('Plaid Service', () => {
         public_token: publicToken,
       });
       expect(db.insert).toHaveBeenCalled();
-      expect(db.values).toHaveBeenCalledWith(expect.objectContaining({
-        plaidAccessToken: 'encrypted:access-123'
-      }));
+      expect(db.values).toHaveBeenCalledWith(
+        expect.objectContaining({
+          plaidAccessToken: 'encrypted:access-123',
+        })
+      );
       expect(result).toEqual({
         itemId: 1,
         institutionName: 'Chase',

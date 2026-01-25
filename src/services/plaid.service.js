@@ -41,7 +41,8 @@ export const createSandboxToken = async (userId, itemId = null) => {
       }
     }
 
-    const createTokenResponse = await plaidClient.sandboxPublicTokenCreate(config);
+    const createTokenResponse =
+      await plaidClient.sandboxPublicTokenCreate(config);
     return {
       publicToken: createTokenResponse.data.public_token,
     };
@@ -77,8 +78,7 @@ export const createLinkToken = async (userId, itemId = null) => {
       }
     }
 
-    //const createTokenResponse = await plaidClient.linkTokenCreate(config);
-    const createTokenResponse = await plaidClient.sandboxPublicTokenCreate(config);
+    const createTokenResponse = await plaidClient.linkTokenCreate(config);
     return {
       linkToken: createTokenResponse.data.link_token,
       expiration: createTokenResponse.data.expiration,
@@ -156,7 +156,7 @@ export const exchangePublicToken = async (userId, publicToken) => {
     }
 
     // Fetch and store accounts
-    await syncAccounts(newItem.id, accessToken);
+    await syncAccounts(userId, newItem.id, accessToken);
 
     return {
       itemId: newItem.id,
@@ -169,18 +169,19 @@ export const exchangePublicToken = async (userId, publicToken) => {
 };
 
 // Sync Accounts for a given item
-export const syncAccounts = async (itemId, accessToken = null) => {
+export const syncAccounts = async (userId, itemId, accessToken = null) => {
   try {
     // Get the access token if not provided
     if (!accessToken) {
       const [item] = await db
         .select()
         .from(plaidItems)
-        .where(eq(plaidItems.id, itemId))
+        .where(and(eq(plaidItems.id, itemId), eq(plaidItems.userId, userId)))
         .limit(1);
 
       if (!item) {
         logger.error('No sync accounts found', itemId);
+        throw new Error(`Plaid item not found: ${itemId}`);
       }
       accessToken = decrypt(item.plaidAccessToken);
     }
@@ -205,7 +206,8 @@ export const syncAccounts = async (itemId, accessToken = null) => {
         currentBalance: account.balances?.current?.toString() || null,
         availableBalance: account.balances?.available?.toString() || null,
         isoCurrencyCode: account.balances?.iso_currency_code || null,
-        unofficialCurrencyCode: account.balances?.unofficial_currency_code || null,
+        unofficialCurrencyCode:
+          account.balances?.unofficial_currency_code || null,
         lastBalanceUpdate: new Date(),
         isActive: true,
       };
@@ -564,7 +566,6 @@ export const getAccountBalance = async (userId, accountIds = []) => {
       .from(plaidAccounts)
       .innerJoin(plaidItems, eq(plaidAccounts.plaidItemId, plaidItems.id))
       .where(and(...conditions));
-
   } catch (e) {
     logger.error(`Failed to get account balance: ${e.message}`);
     throw e;

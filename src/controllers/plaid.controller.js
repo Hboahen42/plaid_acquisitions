@@ -1,5 +1,6 @@
 import {
-  createLinkToken, createSandboxToken,
+  createLinkToken,
+  createSandboxToken,
   exchangePublicToken,
   getAccountBalance,
   getUserAccounts,
@@ -9,7 +10,6 @@ import {
   syncTransactions,
 } from '#services/plaid.service.js';
 import logger from '#config/logger.js';
-
 
 // Create a sandbox token for Plaid Link
 export const callCreateSandboxToken = async (req, res) => {
@@ -34,7 +34,6 @@ export const callCreateSandboxToken = async (req, res) => {
     });
   }
 };
-
 
 // Create a link token for Plaid Link
 export const callCreateLinkToken = async (req, res) => {
@@ -199,9 +198,10 @@ export const fetchTransactionById = async (req, res) => {
 
 export const callSyncAccounts = async (req, res) => {
   try {
-    const { itemId } = req.params;
+    const userId = req.user.id;
+    const { itemId } = req.body;
 
-    const accounts = await syncAccounts(itemId);
+    const accounts = await syncAccounts(userId, itemId);
 
     logger.info(`Accounts synced for item: ${itemId}`);
 

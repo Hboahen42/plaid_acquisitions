@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/routes/users.routes.js</title>
+    <title>Code coverage report for src/models/transactions.model.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/routes</a> users.routes.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/models</a> transactions.model.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>42/42</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>42/42</span>
             </div>
         
             
@@ -88,7 +88,24 @@
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -113,31 +130,65 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import express from 'express';
-import {
-  fetchAllUsers,
-  fetchUserById,
-  updateUserById,
-  deleteUserById,
-} from '#controllers/users.controller.js';
-import { authenticateToken, requireRole } from '#middleware/auth.middleware.js';
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
+  boolean,
+  date,
+  decimal,
+  integer,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core';
+import { plaidAccounts } from '#models/plaidAccounts.model.js';
 &nbsp;
-const router = express.Router();
-&nbsp;
-// Public route for getting all users (could be restricted based on requirements)
-router.get('/', authenticateToken, requireRole(['admin']), fetchAllUsers);
-&nbsp;
-// Protected routes - require authentication
-router.get('/:id', authenticateToken, fetchUserById);
-router.put('/:id', authenticateToken, updateUserById);
-router.delete(
-  '/:id',
-  authenticateToken,
-  requireRole(['admin']),
-  deleteUserById
-);
-&nbsp;
-export default router;
+export const transactions = pgTable('transactions', {
+  id: serial('id').primaryKey(),
+  plaidAccountId: integer('plaid_account_id')
+    .notNull()
+    .references(<span class="fstat-no" title="function not covered" >() =&gt; plaidAccounts.id,</span> { onDelete: 'cascade' }),
+  plaidTransactionId: varchar('plaid_transaction_id', { length: 255 })
+    .notNull()
+    .unique(),
+  amount: decimal('amount', { precision: 15, scale: 2 }).notNull(),
+  isoCurrencyCode: varchar('iso_currency_code', { length: 3 }).default('USD'),
+  unofficialCurrencyCode: varchar('unofficial_currency_code', { length: 10 }),
+  date: date('date').notNull(),
+  authorizedDate: date('authorized_date'),
+  name: varchar('name', { length: 255 }).notNull(),
+  merchantName: varchar('merchant_name', { length: 255 }),
+  paymentChannel: varchar('payment_channel', { length: 50 }),
+  category: text('category').array(),
+  categoryId: varchar('category_id', { length: 50 }),
+  pending: boolean('pending').notNull().default(false),
+  pendingTransactionId: varchar('pending_transaction_id', { length: 255 }),
+  accountOwner: varchar('account_owner', { length: 255 }),
+  transactionType: varchar('transaction_type', { length: 50 }),
+  transactionCode: varchar('transaction_code', { length: 50 }),
+  location: text('location'),
+  paymentMeta: text('payment_meta'),
+  personalFinanceCategory: text('personal_finance_category'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

@@ -24,6 +24,8 @@ yarn-error.log*
 *.swp
 *.swo
 
+coverage
+
 # Claude Code
 .claude
 

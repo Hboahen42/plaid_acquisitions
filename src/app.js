@@ -23,14 +23,6 @@ app.use(
   })
 );
 
-app.use(securityMiddleware);
-
-app.get('/', (req, res) => {
-  logger.info('Hello from Plaid Acquisitions!');
-
-  res.status(200).send('Hello from Plaid Acquisitions!');
-});
-
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -42,6 +34,8 @@ app.get('/health', (req, res) => {
 app.get('/api', (req, res) => {
   res.status(200).json({ message: 'Plaid Acquisitions API is running!' });
 });
+
+app.use(securityMiddleware);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
