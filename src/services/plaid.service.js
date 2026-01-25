@@ -4,7 +4,8 @@ import { plaidAccounts, plaidItems, transactions } from '#src/models/index.js';
 import { and, desc, eq } from 'drizzle-orm';
 import { plaidClient } from '#src/config/plaid.js';
 import logger from '#config/logger.js';
-import e from 'express';
+import { inArray } from 'drizzle-orm/sql/expressions/conditions';
+import { encrypt, decrypt } from '#src/utils/crypto.js';
 
 // PLAID_PRODUCTS is a comma-separated list of products to use when initializing
 // Link. Note that this list must contain 'assets' in order for the app to be
@@ -18,6 +19,37 @@ const PLAID_PRODUCTS = (
 const PLAID_COUNTRY_CODES = (
   process.env.PLAID_COUNTRY_CODES || CountryCode.Us
 ).split(',');
+
+// create sandbox token for Plaid Link initialization
+export const createSandboxToken = async (userId, itemId = null) => {
+  try {
+    const config = {
+      institution_id: 'ins_20',
+      initial_products: ['transactions'],
+    };
+
+    // If updating an existing item, include the access token
+    if (itemId) {
+      const [item] = await db
+        .select()
+        .from(plaidItems)
+        .where(and(eq(plaidItems.id, itemId), eq(plaidItems.userId, userId)))
+        .limit(1);
+
+      if (item) {
+        config.access_token = decrypt(item.plaidAccessToken);
+      }
+    }
+
+    const createTokenResponse = await plaidClient.sandboxPublicTokenCreate(config);
+    return {
+      publicToken: createTokenResponse.data.public_token,
+    };
+  } catch (e) {
+    logger.error('Failed to create sandbox link token', e.message);
+    throw e;
+  }
+};
 
 // create a link token for Plaid Link initialization
 export const createLinkToken = async (userId, itemId = null) => {
@@ -41,13 +73,14 @@ export const createLinkToken = async (userId, itemId = null) => {
         .limit(1);
 
       if (item) {
-        config.access_token = item.plaidAccessToken;
+        config.access_token = decrypt(item.plaidAccessToken);
       }
     }
 
+    //const createTokenResponse = await plaidClient.linkTokenCreate(config);
     const createTokenResponse = await plaidClient.sandboxPublicTokenCreate(config);
     return {
-      linkToken: createTokenResponse.data.linkToken,
+      linkToken: createTokenResponse.data.link_token,
       expiration: createTokenResponse.data.expiration,
     };
   } catch (e) {
@@ -63,7 +96,7 @@ export const exchangePublicToken = async (userId, publicToken) => {
       public_token: publicToken,
     });
 
-    const accessToken = tokenResponse.data.accessToken;
+    const accessToken = tokenResponse.data.access_token;
     const itemId = tokenResponse.data.item_id;
 
     // Get item details
@@ -81,21 +114,49 @@ export const exchangePublicToken = async (userId, publicToken) => {
 
     const institutionName = institutionResponse.data.institution.name;
 
-    const [newItem] = await db
-      .insert(plaidItems)
-      .values({
-        userId,
-        plaidItemId: itemId,
-        plaidAccessToken: accessToken,
-        institutionId,
-        institutionName,
-        status: 'active',
-        lastSuccessfulUpdate: new Date(),
-      })
-      .returning();
+    // Check if item already exists
+    const [existingItem] = await db
+      .select()
+      .from(plaidItems)
+      .where(eq(plaidItems.plaidItemId, itemId))
+      .limit(1);
+
+    let newItem;
+
+    if (existingItem) {
+      // Update existing item
+      [newItem] = await db
+        .update(plaidItems)
+        .set({
+          plaidAccessToken: encrypt(accessToken),
+          institutionId,
+          institutionName,
+          status: 'active',
+          lastSuccessfulUpdate: new Date(),
+          errorCode: null,
+          errorMessage: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(plaidItems.id, existingItem.id))
+        .returning();
+    } else {
+      // Insert new item
+      [newItem] = await db
+        .insert(plaidItems)
+        .values({
+          userId,
+          plaidItemId: itemId,
+          plaidAccessToken: encrypt(accessToken),
+          institutionId,
+          institutionName,
+          status: 'active',
+          lastSuccessfulUpdate: new Date(),
+        })
+        .returning();
+    }
 
     // Fetch and store accounts
-    await this.syncAccounts(newItem.id, accessToken);
+    await syncAccounts(newItem.id, accessToken);
 
     return {
       itemId: newItem.id,
@@ -120,9 +181,8 @@ export const syncAccounts = async (itemId, accessToken = null) => {
 
       if (!item) {
         logger.error('No sync accounts found', itemId);
-        throw e;
       }
-      accessToken = item.plaidAccessToken;
+      accessToken = decrypt(item.plaidAccessToken);
     }
 
     // Fetch accounts from Plaid
@@ -130,7 +190,7 @@ export const syncAccounts = async (itemId, accessToken = null) => {
       access_token: accessToken,
     });
 
-    const accounts = await accountsResponse.data.accounts;
+    const accounts = accountsResponse.data.accounts;
 
     // Update or insert accounts
     for (const account of accounts) {
@@ -142,10 +202,10 @@ export const syncAccounts = async (itemId, accessToken = null) => {
         type: account.type,
         subtype: account.subtype,
         mask: account.mask,
-        currentBalance: account.balance.current?.toString(),
-        availableBalance: account.balance.available?.toString(),
-        isoCurrencyCode: account.balance.iso_currency_code,
-        unofficialCurrencyCode: account.balance.unofficial_currency_code,
+        currentBalance: account.balances?.current?.toString() || null,
+        availableBalance: account.balances?.available?.toString() || null,
+        isoCurrencyCode: account.balances?.iso_currency_code || null,
+        unofficialCurrencyCode: account.balances?.unofficial_currency_code || null,
         lastBalanceUpdate: new Date(),
         isActive: true,
       };
@@ -154,14 +214,14 @@ export const syncAccounts = async (itemId, accessToken = null) => {
       const [existingAccount] = await db
         .select()
         .from(plaidAccounts)
-        .where(eq(plaidAccounts.plaidAccountId, accounts.account_id))
+        .where(eq(plaidAccounts.plaidAccountId, account.account_id))
         .limit(1);
 
       if (existingAccount) {
         await db
           .update(plaidAccounts)
           .set({ ...accountData, updatedAt: new Date() })
-          .where(eq(plaidAccounts.plaidAccountId, existingAccount.id));
+          .where(eq(plaidAccounts.id, existingAccount.id));
       } else {
         await db.insert(plaidAccounts).values(accountData);
       }
@@ -178,6 +238,8 @@ export const syncAccounts = async (itemId, accessToken = null) => {
         updatedAt: new Date(),
       })
       .where(eq(plaidItems.id, itemId));
+
+    return accounts;
   } catch (e) {
     await db
       .update(plaidItems)
@@ -185,7 +247,7 @@ export const syncAccounts = async (itemId, accessToken = null) => {
         status: 'error',
         errorCode: e.error_code || 'UNKNOWN',
         errorMessage: e.message,
-        updatedAt: Date.now(),
+        updatedAt: new Date(),
       })
       .where(eq(plaidItems.id, itemId));
 
@@ -247,7 +309,7 @@ export const syncTransactions = async userId => {
 
         while (hasMore) {
           const request = {
-            access_token: item.plaidAccessToken,
+            access_token: decrypt(item.plaidAccessToken),
             cursor,
             count: 500,
           };
@@ -454,13 +516,19 @@ export const removeItem = async (userId, itemId) => {
       .limit(1);
 
     if (!item) {
+      logger.error('No sync accounts found', itemId);
+    }
+
+    const accessToken = decrypt(item.plaidAccessToken);
+
+    if (!item) {
       logger.error(`Item: ${itemId} not found`);
-      throw e;
+      throw new Error('Item not found');
     }
 
     // Remove from Plaid
     await plaidClient.itemRemove({
-      access_token: item.plaidAccessToken,
+      access_token: accessToken,
     });
 
     // Delete from database (cascade will handle accounts and transactions)
@@ -476,7 +544,13 @@ export const removeItem = async (userId, itemId) => {
 // Get balance for specific accounts
 export const getAccountBalance = async (userId, accountIds = []) => {
   try {
-    let query = db
+    const conditions = [eq(plaidItems.userId, userId)];
+
+    if (!conditions.length > 0) {
+      conditions.push(inArray(plaidAccounts.id, accountIds));
+    }
+
+    return await db
       .select({
         accountId: plaidAccounts.id,
         accountName: plaidAccounts.name,
@@ -489,15 +563,8 @@ export const getAccountBalance = async (userId, accountIds = []) => {
       })
       .from(plaidAccounts)
       .innerJoin(plaidItems, eq(plaidAccounts.plaidItemId, plaidItems.id))
-      .where(eq(plaidItems.userId, userId));
+      .where(and(...conditions));
 
-    if (accountIds.length > 0) {
-      query = query.where(
-        and(eq(plaidItems.userId, userId), plaidAccounts.id.in(accountIds))
-      );
-    }
-
-    return await query;
   } catch (e) {
     logger.error(`Failed to get account balance: ${e.message}`);
     throw e;

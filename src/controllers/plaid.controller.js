@@ -1,5 +1,5 @@
 import {
-  createLinkToken,
+  createLinkToken, createSandboxToken,
   exchangePublicToken,
   getAccountBalance,
   getUserAccounts,
@@ -10,8 +10,34 @@ import {
 } from '#services/plaid.service.js';
 import logger from '#config/logger.js';
 
+
+// Create a sandbox token for Plaid Link
+export const callCreateSandboxToken = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { itemId } = req.body;
+
+    const result = await createSandboxToken(userId, itemId);
+
+    logger.info(`Sandbox token created for user ${userId}`);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (e) {
+    logger.error(`Error creating sandbox token ${e.message}`);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create sandbox token',
+      error: e.message,
+    });
+  }
+};
+
+
 // Create a link token for Plaid Link
-export const fetchCreateLinkToken = async (req, res) => {
+export const callCreateLinkToken = async (req, res) => {
   try {
     const userId = req.user.id;
     const { itemId } = req.body;
@@ -22,7 +48,7 @@ export const fetchCreateLinkToken = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      date: result,
+      data: result,
     });
   } catch (e) {
     logger.error(`Error creating link token ${e.message}`);
@@ -35,7 +61,7 @@ export const fetchCreateLinkToken = async (req, res) => {
 };
 
 // Exchange public token for access token
-export const fetchExchangePublicToken = async (req, res) => {
+export const callExchangePublicToken = async (req, res) => {
   try {
     const userId = req.user.id;
     const { publicToken } = req.body;
@@ -116,11 +142,11 @@ export const fetchBalanceById = async (req, res) => {
 };
 
 // Sync transactions for user's accounts
-export const fetchSyncTransactions = async (req, res) => {
+export const callSyncTransactions = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const result = syncTransactions(userId);
+    const result = await syncTransactions(userId);
 
     logger.info(
       `Transactions synced for user ${userId}: ${result.added.length} added, ${result.modified.length} modified, ${result.removed.length} removed`
@@ -171,11 +197,11 @@ export const fetchTransactionById = async (req, res) => {
   }
 };
 
-export const fetchSyncAccounts = async (req, res) => {
+export const callSyncAccounts = async (req, res) => {
   try {
-    const { itemId } = req.body;
+    const { itemId } = req.params;
 
-    const accounts = await syncAccounts(parseInt(itemId));
+    const accounts = await syncAccounts(itemId);
 
     logger.info(`Accounts synced for item: ${itemId}`);
 
@@ -198,9 +224,9 @@ export const fetchSyncAccounts = async (req, res) => {
 export const deleteItemById = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { itemId } = req.body;
+    const { itemId } = req.params;
 
-    await removeItem(userId, parseInt(itemId));
+    await removeItem(userId, itemId);
 
     logger.info(`Item ${itemId} removed for user ${userId}`);
 
@@ -210,7 +236,7 @@ export const deleteItemById = async (req, res) => {
     });
   } catch (e) {
     logger.error(`Error removing item: ${e.message}`);
-    res.status(500).json({
+    res.status(400).json({
       success: false,
       message: 'Failed to remove bank connection',
       error: e.message,

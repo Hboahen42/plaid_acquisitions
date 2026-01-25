@@ -4,11 +4,12 @@ import {
   deleteItemById,
   fetchAccountsById,
   fetchBalanceById,
-  fetchCreateLinkToken,
-  fetchExchangePublicToken,
-  fetchSyncAccounts,
-  fetchSyncTransactions,
+  callCreateLinkToken,
+  callExchangePublicToken,
+  callSyncAccounts,
+  callSyncTransactions,
   fetchTransactionById,
+  callCreateSandboxToken,
 } from '#controllers/plaid.controller.js';
 
 
@@ -17,26 +18,36 @@ const router = express.Router();
 // All routes require authentication
 router.use(authenticateToken);
 
-// Link token creation
-router.post('/create-link-token', fetchCreateLinkToken);
-
-// Exchange public token
-router.post('/exchange-token', fetchExchangePublicToken);
+// Get Routes
 
 // Get accounts
 router.get('/accounts', fetchAccountsById);
 
-// Sync accounts for a specific item
-router.post('/accounts/sync/:itemId', fetchSyncAccounts);
-
 // Get balances
 router.get('/balances', fetchBalanceById);
 
-// Sync transactions
-router.post('transactions/sync', fetchSyncTransactions);
-
 // Get transaction
 router.get('/transactions', fetchTransactionById);
+
+
+// Post Routes
+// Sandbox token creation
+router.post('/create-sandbox-token', callCreateSandboxToken);
+
+// Link token creation
+router.post('/create-link-token', callCreateLinkToken);
+
+// Exchange public token
+router.post('/exchange-token', callExchangePublicToken);
+
+// Sync accounts for a specific item
+router.post('/accounts/sync/:itemId', callSyncAccounts);
+
+// Sync transactions
+router.post('/transactions/sync', callSyncTransactions);
+
+
+// Delete Routes
 
 // Remove item
 router.delete('/items/:itemId', deleteItemById);
