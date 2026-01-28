@@ -27,6 +27,28 @@ export const fetchAllUsers = async (req, res, next) => {
   }
 };
 
+export const fetchCurrentUser = async (req, res, next) => {
+  try{
+    const userId = req.user.id;
+
+    logger.info(`Getting current user: ${userId}`);
+    const user = await getUserById(userId);
+
+    res.json({
+      message: 'Successfully retrieved current user',
+      user,
+    });
+  } catch (e) {
+    logger.error('Error getting current user', e);
+
+    if (e.message === 'User not found') {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    next(e);
+  }
+};
+
 export const fetchUserById = async (req, res, next) => {
   try {
     const validationResult = userIdSchema.safeParse(req.params);

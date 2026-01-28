@@ -4,6 +4,7 @@ import {
   fetchUserById,
   updateUserById,
   deleteUserById,
+  fetchCurrentUser,
 } from '#controllers/users.controller.js';
 import { authenticateToken, requireRole } from '#middleware/auth.middleware.js';
 
@@ -13,6 +14,7 @@ const router = express.Router();
 router.get('/', authenticateToken, requireRole(['admin']), fetchAllUsers);
 
 // Protected routes - require authentication
+router.get('/me', authenticateToken, fetchCurrentUser);
 router.get('/:id', authenticateToken, fetchUserById);
 router.put('/:id', authenticateToken, updateUserById);
 router.delete(
