@@ -9,10 +9,18 @@ import securityMiddleware from '#middleware/security.middleware.js';
 import usersRoutes from '#routes/users.routes.js';
 import plaidRoutes from '#routes/plaid.routes.js';
 
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
+
+const corsOptions = {
+  origin: CORS_ORIGIN,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
+};
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
