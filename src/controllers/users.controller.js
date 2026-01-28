@@ -41,8 +41,8 @@ export const fetchCurrentUser = async (req, res, next) => {
   } catch (e) {
     logger.error('Error getting current user', e);
 
-    if (e.message === 'User not Found') {
-      return res.status(404).json({error: 'User not Found'});
+    if (e.message === 'User not found') {
+      return res.status(404).json({ error: 'User not found' });
     }
 
     next(e);
